@@ -31,10 +31,7 @@ import os, sys, shutil, platform, subprocess, wave, zipfile, httplib, urllib
 NO_ALTERNATE = 1024
 
 def filename(idx, alternate=0):
-    if "gruvin9x" in sys.argv:
-        ext = ".ad4"
-    else:
-        ext = ".wav"
+    ext = ".ad4" if "gruvin9x" in sys.argv else ".wav"
     if isinstance(idx, int):
         result = "%04d%s" % (idx, ext)
     elif board in ('sky9x', 'taranis'):
@@ -125,8 +122,6 @@ def generate(str, filename):
 
 def ttsEn():
     systemSounds = []
-    sounds = []
-    
     for i in range(100):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     for i in range(9):
@@ -182,7 +177,7 @@ def ttsEn():
                     (u"telemetry recovered", "telemok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                  (u"gear!, up!", "gearup"),
                  (u"gear!, down!", "geardn"),
                  (u"flaps!, up!", "flapup"),
@@ -228,16 +223,14 @@ def ttsEn():
                  (u"flight mode!, thermal", "fm-thm"),	
                  (u"flight mode!, thermal left", "fm-thml"),	
                  (u"flight mode!, thermal right", "fm-thmr"),					 
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsFr():
     systemSounds = []
-    sounds = []
-    
     for i in range(100):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     for i in range(10):
@@ -252,7 +245,7 @@ def ttsFr():
                            "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
                            "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
                            "orientation", "vario"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+146+i)))            
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+146+i)))
     for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+180+i)))
     for s, f, a in [(u"Batterie radio faible !", "lowbatt", 485),
@@ -278,7 +271,7 @@ def ttsFr():
                     (u"Télémétrie retrouvée", "telemok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                  (u"altitude", "altitude"),
                  (u"température moteur", "moteur"),
                  (u"température contrôleur", "cntrleur"),
@@ -290,16 +283,14 @@ def ttsFr():
                  (u"écolage", "trnon"),
                  (u"fin écolage", "trnoff"),
                  (u"moteur coupé", "engoff"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsIt():
     systemSounds = []
-    sounds = []
-    
     for i in range(101):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     systemSounds.append(("mila", filename(PROMPT_SYSTEM_BASE+101)))
@@ -307,7 +298,7 @@ def ttsIt():
     for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+103+i)))
     for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+113+i)))            
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+113+i)))
     for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                     (u"batteria della radio scarica", "lowbatt", 485),
                     (u"controllo motore non in posizione, verificare", "thralert", 481),
@@ -338,7 +329,7 @@ def ttsIt():
                            u"totale lipo", u"tensione", u"corrente", u"consumo", u"potenza", u"accellerazione X", u"accellerazione Y", u"accellerazione Z",
                            u"direzione", u"variometro",u"minimo",u"massimo"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+132+i)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                  (u"carrello chiuso", "gearup"),
                  (u"carrello aperto", "geardn"),
                  (u"flap rientrati", "flapup"),
@@ -364,16 +355,14 @@ def ttsIt():
                  (u"fase di volo 7", "fltmd7"),
                  (u"fase di volo 8", "fltmd8"),
                  (u"fase di volo 9", "fltmd9"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsPt():
     systemSounds = []
-    sounds = []
-
     for i in range(101):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     systemSounds.append(("cento", filename(PROMPT_SYSTEM_BASE+101)))
@@ -389,7 +378,7 @@ def ttsPt():
     for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+111+i)))
     for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))            
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))
     for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
                     (u"bateria do rádio fraca", "lowbatt", 485),
                     (u"atenção,acelerador não está no mínimo", "thralert", 481),
@@ -418,7 +407,7 @@ def ttsPt():
                             u"Total lipo", u"tensão", u"corrente", u"consumo", u"potência", u"aceleração X", u"aceleração Y", u"aceleração Z",
                             u"Direcção", u"variómetro", u"mínimo", u"máximo"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+141+i)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                   (u"trem, em cima.", "gearup"),
                   (u"trem, em baixo.", "geardn"),
                   (u"flaps recolhidos", "flapup"),
@@ -444,16 +433,14 @@ def ttsPt():
                   (u"fase de voo 7", "fltmd7"),
                   (u"fase de voo 8", "fltmd8"),
                   (u"fase de voo 9", "fltmd9"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsEs():
     systemSounds = []
-    sounds = []
-
     for i in range(101):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     systemSounds.append(("ciento", filename(PROMPT_SYSTEM_BASE+101)))
@@ -469,7 +456,7 @@ def ttsEs():
     for i, s in enumerate(["coma", "un", "una", "y", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+111+i)))
     for i, s in enumerate([u"Voltio", u"ampério", u"metros por segundo", u"", u"kilómetro por hora", u"metros", u"grados", u"por ciento", u"miliamperios", u"miliamperios por hora", u"vatio", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))            
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))
     for s, f, a in [(u"me tienes abandonada", "inactiv", 486),
                     (u"batería del transmisor baja", "lowbatt", 485),
                     (u"El acelerador está activado, por favor, corrijalo", "thralert", 481),
@@ -500,7 +487,7 @@ def ttsEs():
                             u"Total lipo", u"voltaje", u"corriente", u"consumo", u"potencia", u"aceleración X", u"aceleración Y", u"aceleración Z",
                             u"dirección", u"variómetro", u"minimo", u"máximo"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+141+i)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                   (u"tren arriba.", "gearup"),
                   (u"tren abajo.", "geardn"),
                   (u"flaps arriba", "flapup"),
@@ -526,23 +513,21 @@ def ttsEs():
                   (u"fase de vuelo 7", "fltmd7"),
                   (u"fase de vuelo 8", "fltmd8"),
                   (u"fase de vuelo 9", "fltmd9"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsDe():
     systemSounds = []
-    sounds = []
-
     for i in range(101):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE+101)))
     for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+102+i)))
     for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))            
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
     for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),
                     (u"Senderakku niedrig", "lowbatt", 485),
                     (u"Gaskanal nicht Null, bitte pruefen", "thralert", 481),
@@ -571,7 +556,7 @@ def ttsDe():
                            "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                            "Richtung", "Variometer","Minimum","Maximum"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+129+i)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                  (u"Fahrwerk eingezogen", "gearup"),
                  (u"Fahrwerk ausgefahren", "geardn"),
                  (u"Klappen eingefahren", "flapup"),
@@ -597,18 +582,16 @@ def ttsDe():
                  (u"Regime 7", "fltmd7"),
                  (u"Regime 8", "fltmd8"),
                  (u"Regime 9", "fltmd9"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################
 
 def ttsCz():
     systemSounds = []
-    sounds = []
-
     for i, s in enumerate(["nula", "jedna", "dva"]):
-        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+i)))    
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+i)))
     for i in range(97):
         systemSounds.append((str(3+i), filename(PROMPT_SYSTEM_BASE+3+i)))
     for i, s in enumerate(["sto", u"dvěsta", u"třista", u"čtyřista", u"pětset", u"šestset", "sedmset", "osmset",             
@@ -616,7 +599,7 @@ def ttsCz():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+100+i)))
     for i, s in enumerate([u"tisíce", "jeden", "jedno", u"dvě", u"celá", u"celé", u"celých", u"mínus"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
-        
+
     for i, s in enumerate(["volt", "volty", u"voltů", "voltu",
                            u"ampér", u"ampéry", u"ampérů", u"ampéru",
                            "metr za sekundu", "metry za sekundu", u"metrů za sekundu", "metru za sekundu",
@@ -663,7 +646,7 @@ def ttsCz():
                     (u"telemetrie je funkční", "telemok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
-    for i, (s, f) in enumerate([
+    sounds = [(s, filename(f, PROMPT_CUSTOM_BASE+i)) for i, (s, f) in enumerate([
                  (u"podvozek je zasunut", "podvoz0"),
                  (u"podvozek je vysunut", "podvoz1"),
                  (u"klapky jsou zapnuty", "klapky1"),
@@ -686,8 +669,8 @@ def ttsCz():
                  (u"vario je zapnuto", "vario0"),
                  (u"vario je vypnuto", "vario1"),
                  (u"start povolen", "startok"),
-                 ]):
-        sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
+                 ])]
+
     return systemSounds, sounds
 
 ################################################################

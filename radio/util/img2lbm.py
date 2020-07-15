@@ -16,74 +16,39 @@ else:
             what = s
             break
 
-if what == "largimg":
-    rows = 1
-    if len(sys.argv) > 4:
-        rows = int(sys.argv[4])
-    f.write("255,%d, %d,\n" % (width-255, height/rows))
-    for y in range(0, height, 8):
-        for x in range(width):
-            value = 0
-            for z in range(8):
-                if y+z < height and image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z            
-            f.write("0x%02x," % value)
-        f.write("\n")
-elif what == "img":
-    rows = 1
-    if len(sys.argv) > 4:
-        rows = int(sys.argv[4])
-    f.write("%d,%d,\n" % (width, height/rows))
-    for y in range(0, height, 8):
-        for x in range(width):
-            value = 0
-            for z in range(8):
-                if y+z < height and image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z            
-            f.write("0x%02x," % value)
-        f.write("\n")
-elif what == "bmp":
-    colors = []
-    f.write("%d,%d,\n" % (width, height))
-    for y in range(0, height, 2):
-        for x in range(width):
-            value = 0xFF;            
-            gray1 = Qt.qGray(image.pixel(x, y))
-            gray2 = Qt.qGray(image.pixel(x, y+1))
-            for i in range(4):
-                if (gray1 & (1<<(4+i))):
-                    value -= 1<<i
-                if (gray2 & (1<<(4+i))):
-                    value -= 1<<(4+i)                    
-            f.write("0x%02x," % value)
-        f.write("\n")
-elif what == "03x05":
+if what == "03x05":
     for y in range(0, height, 5):
         for x in range(width):
-            value = 0
-            for z in range(5):
-                if image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z
+            value = sum(
+                1 << z
+                for z in range(5)
+                if image.pixel(x, y + z) == Qt.qRgb(0, 0, 0)
+            )
+
             f.write("0x%02x," % value)
-        f.write("\n")        
+        f.write("\n")
 elif what == "04x06":
     for y in range(0, height, 7):
         for x in range(width):
-            value = 0
-            for z in range(7):
-                if image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z
+            value = sum(
+                1 << z
+                for z in range(7)
+                if image.pixel(x, y + z) == Qt.qRgb(0, 0, 0)
+            )
+
             if value == 0x7f:
                 value = 0xff
             f.write("0x%02x," % value)
-        f.write("\n")        
+        f.write("\n")
 elif what == "05x07":
     for y in range(0, height, 8):
         for x in range(width):
-            value = 0
-            for z in range(8):
-                if image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z
+            value = sum(
+                1 << z
+                for z in range(8)
+                if image.pixel(x, y + z) == Qt.qRgb(0, 0, 0)
+            )
+
             f.write("0x%02x," % value)
         f.write("\n")
 elif what == "08x10":
@@ -106,21 +71,70 @@ elif what == "10x14":
     for y in range(0, height, 16):
         for x in range(width):
             for l in range(0, 16, 8):
-                value = 0
-                for z in range(8):
-                    if image.pixel(x, y+l+z) == Qt.qRgb(0, 0, 0):
-                        value += 1 << z
+                value = sum(
+                    1 << z
+                    for z in range(8)
+                    if image.pixel(x, y + l + z) == Qt.qRgb(0, 0, 0)
+                )
+
                 f.write("0x%02x," % value)
         f.write("\n")
 elif what == "22x38":
     for y in range(0, height, 40):
         for x in range(width):
             for l in range(0, 40, 8):
-                value = 0
-                for z in range(8):
-                    if image.pixel(x, y+l+z) == Qt.qRgb(0, 0, 0):
-                        value += 1 << z
+                value = sum(
+                    1 << z
+                    for z in range(8)
+                    if image.pixel(x, y + l + z) == Qt.qRgb(0, 0, 0)
+                )
+
                 f.write("0x%02x," % value)
-        f.write("\n")        
+        f.write("\n")
+elif what == "bmp":
+    colors = []
+    f.write("%d,%d,\n" % (width, height))
+    for y in range(0, height, 2):
+        for x in range(width):
+            value = 0xFF;            
+            gray1 = Qt.qGray(image.pixel(x, y))
+            gray2 = Qt.qGray(image.pixel(x, y+1))
+            for i in range(4):
+                if (gray1 & (1<<(4+i))):
+                    value -= 1<<i
+                if (gray2 & (1<<(4+i))):
+                    value -= 1<<(4+i)                    
+            f.write("0x%02x," % value)
+        f.write("\n")
+elif what == "img":
+    rows = 1
+    if len(sys.argv) > 4:
+        rows = int(sys.argv[4])
+    f.write("%d,%d,\n" % (width, height/rows))
+    for y in range(0, height, 8):
+        for x in range(width):
+            value = sum(
+                1 << z
+                for z in range(8)
+                if y + z < height and image.pixel(x, y + z) == Qt.qRgb(0, 0, 0)
+            )
+
+            f.write("0x%02x," % value)
+        f.write("\n")
+elif what == "largimg":
+    rows = 1
+    if len(sys.argv) > 4:
+        rows = int(sys.argv[4])
+    f.write("255,%d, %d,\n" % (width-255, height/rows))
+    for y in range(0, height, 8):
+        for x in range(width):
+            value = sum(
+                1 << z
+                for z in range(8)
+                if y + z < height and image.pixel(x, y + z) == Qt.qRgb(0, 0, 0)
+            )
+
+            f.write("0x%02x," % value)
+        f.write("\n")
 else:
     print("wrong argument", sys.argv[3])
