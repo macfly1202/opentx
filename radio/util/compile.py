@@ -173,20 +173,19 @@ class GenerateThread(threading.Thread):
       self.hexes, self.stamp = generate(self.hex, self.arg, self.extension, self.options, [self.language], self.maxsize)     
            
 def multithread_generate(hex, arg, extension, options, languages, maxsize):
-    if mt:
-        result = []
-        threads = []
-        for language in languages:
-            thread = GenerateThread(hex, arg, extension, options, language, maxsize)
-            threads.append(thread)
-            thread.start()
-        for thread in threads:
-            thread.join()
-            result.extend(thread.hexes)
-            stamp = thread.stamp
-        return result, stamp
-    else:
+    if not mt:
         return generate(hex, arg, extension, options, languages, maxsize)
+    result = []
+    threads = []
+    for language in languages:
+        thread = GenerateThread(hex, arg, extension, options, language, maxsize)
+        threads.append(thread)
+        thread.start()
+    for thread in threads:
+        thread.join()
+        result.extend(thread.hexes)
+        stamp = thread.stamp
+    return result, stamp
         
         
 def generate_c9x_list(filename, hexes, board):

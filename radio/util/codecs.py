@@ -8,14 +8,10 @@ BIAS =           (0x84)      # Bias for linear code.
 
 def alaw2linear(a_val):
     a_val ^= 0x55
-    
+
     t = a_val & QUANT_MASK
     seg = (a_val & SEG_MASK) >> SEG_SHIFT
-    if (seg):
-        t = (t + t + 1 + 32) << (seg + 2)
-    else:
-        t = (t + t + 1     ) << 3
-    
+    t = (t + t + 1 + 32) << (seg + 2) if (seg) else (t + t + 1     ) << 3
     if a_val & SIGN_BIT:
         return t
     else:
@@ -36,10 +32,7 @@ def ulaw2linear(u_val):
         return (t - BIAS)
 
 def pcmTable(fn):
-    result = []
-    for i in range(256):
-        result.append(fn(i))
-    return result
+    return [fn(i) for i in range(256)]
 
 def tableToString(name, table):   
     result =  'const int16_t ' + name + '[256] = { ' 

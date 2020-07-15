@@ -27,11 +27,11 @@ def pushCluster(val):
    cluster += 1
 
 def pushFile(size):
-   sectors = size / 512
-   count = sectors / 8
-   for i in range(count-1):
-     pushCluster(cluster+1)
-   pushCluster(0xFFF)
+  sectors = size / 512
+  count = sectors / 8
+  for _ in range(count-1):
+    pushCluster(cluster+1)
+  pushCluster(0xFFF)
 
 def pushDisk(eeprom, flash):
   global curr, idx, byte, cluster
